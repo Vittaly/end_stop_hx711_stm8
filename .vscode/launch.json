@@ -1,0 +1,36 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+//
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "c:/temp/end_stop_hx711_stm8/.pio/build/stm8sdisco/firmware.elf",
+            "projectEnvName": "stm8sdisco",
+            "toolchainBinDir": "C:/Users/Vitaly/.platformio/packages/tool-stm8binutils/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "C:/Users/Vitaly/.platformio/platforms/ststm8/misc/svd/STM8S105C6.svd",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug (stm8sdisco)"
+            }
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "c:/temp/end_stop_hx711_stm8/.pio/build/stm8sdisco/firmware.elf",
+            "projectEnvName": "stm8sdisco",
+            "toolchainBinDir": "C:/Users/Vitaly/.platformio/packages/tool-stm8binutils/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "C:/Users/Vitaly/.platformio/platforms/ststm8/misc/svd/STM8S105C6.svd"
+        }
+    ]
+}
