@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "hx711.h": "c"
+        "hx711.h": "c",
+        "delay.h": "c",
+        "stm8s.h": "c"
     }
 }
