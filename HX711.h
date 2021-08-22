@@ -1,22 +1,17 @@
-#ifndef HX711_h
-#define HX711_h
+#include <stdint.h>
 
 //==== config ====
 
-#ifndef PIN_DOUT
-//   #define PORT_DOUT PORTC
-  #define READ_PORT_DOUT PINC
-  #define DDR_DOUT DDRC
-  #define PIN_DOUT PORTC3
-#endif
 
-#ifndef PIN_CLK
-  #define PORT_CLK PORTC
-  #define DDR_CLK DDRC
-  #define PIN_CLK PORTC2
-#endif
+ //==== pins=======
+  #define PORT_DOUT GPIOC
+  #define PIN_DOUT GPIO_PIN_4 //5v tolerant input (no protect diode to Vcc)
 
-#include <stdint.h>
+
+  #define PORT_CLK GPIOC
+  #define PIN_CLK GPIO_PIN_3
+ //==== end pins=======
+
 
 // define channel, and gain factor
 // channel selection is made by passing the appropriate gain: 128 or 64 for channel A, 32 for channel B
@@ -69,4 +64,4 @@ void HX711_power_down();
 // wakes up the chip after power down mode
 void HX711_power_up();
 
-#endif /* HX711_h */
+

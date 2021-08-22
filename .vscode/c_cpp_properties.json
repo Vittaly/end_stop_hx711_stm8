@@ -25,8 +25,8 @@
             "defines": [
                 "F_CPU=16000000L",
                 "PLATFORMIO=50101",
-                "STM8S_DISCOVERY",
-                "STM8S105",
+                "STM8S_BLUE",
+                "STM8S103",
                 "USE_STDPERIPH_DRIVER",
                 "USE_STDINT",
                 ""

@@ -1,17 +1,30 @@
-
-
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 #include "stm8s_it.h"    /* SDCC patch: required by SDCC for interrupts */
-
-/**
-  * @addtogroup GPIO_Toggle
-  * @{
-  */
+#include "HX711/HX711.h"
 
 
 #define LED_GPIO_PORT  (GPIOB)
 #define LED_GPIO_PINS  (GPIO_PIN_5)	
+
+
+
+#define END_STOP_PORT(GPIOC) 
+#define END_STOP_PIN (GPIO_PIN_4)
+
+#define TARE_PORT(GPIOC) 
+#define TARE_PIN (GPIO_PIN_5)
+
+
+
+
+
+//Filter parameters
+float FK = 0.9;
+int tolerance = 3000; //
+int values_count = 5; //HX711 speed is 80Hz or near this value. To get 10 values the sensor need around 120ms.
+
+
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -31,6 +44,13 @@ void main(void)
 
   /* Initialize I/Os in Output Mode */
   GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+
+
+  HX711_init(128);
+
 
   while (1)
   {

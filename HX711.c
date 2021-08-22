@@ -1,27 +1,34 @@
 #include <HX711.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/cpufunc.h>
-#include <util/delay.h>
+#include <stm8s_gpio.h>
+#include "delay.h"
 
 // static uint8_t PD_SCK;    // Power Down and Serial Clock Input Pin
 // static uint8_t DOUT;// Serial Data Output Pin
 static uint8_t GAIN;// amplification factor
 static long OFFSET = 0;    // used for tare weight
 static float SCALE = 1;    // used to return weight in grams, kg, ounces, whatever
-
-#define clock_high() (PORT_CLK |=  (1 << PIN_CLK))
-#define clock_low()  (PORT_CLK &= ~(1 << PIN_CLK))
-#define get_DOUT()   ((READ_PORT_DOUT & (1 << PIN_DOUT)) >> PIN_DOUT)
+ 
+ 
+//#define clock_high() (PORT_CLK |=  (1 << PIN_CLK))
+#define clock_high() GPIO_WriteHigh(PORT_CLK, PIN_CLK)
+//#define clock_low()  (PORT_CLK &= ~(1 << PIN_CLK))
+#define clock_low() GPIO_WriteLow(PORT_CLK, PIN_CLK)
+//#define get_DOUT()   ((READ_PORT_DOUT & (1 << PIN_DOUT)) >> PIN_DOUT)
+#define get_DOUT() GPIO_ReadInputPin(PORT_DOUT, PIN_DOUT)
 
 void HX711_init(uint8_t gain) {
 //     PD_SCK = pd_sck;
 //     DOUT = dout;
 
 //    pinMode(PD_SCK, OUTPUT);
-    DDR_CLK |= (1 << PIN_CLK);
+//    DDR_CLK |= (1 << PIN_CLK);
+     GPIO_Init(PORT_CLK, (GPIO_Pin_TypeDef)PIN_CLK, GPIO_MODE_IN_FL_IT);
+
+
 //    pinMode(DOUT, INPUT);
-    DDR_DOUT &= ~(1 << PIN_DOUT);
+//    DDR_DOUT &= ~(1 << PIN_DOUT);
+    GPIO_Init(PORT_DOUT, (GPIO_Pin_TypeDef)PIN_DOUT, GPIO_MODE_IN_FL_IT);
+
     HX711_set_gain(gain);
 }
 
@@ -52,9 +59,7 @@ void HX711_set_gain(uint8_t gain) {
 
 long HX711_read() {
     // wait for the chip to become ready
-    while (!HX711_is_ready()) {
-        _NOP();
-    }
+    while (!HX711_is_ready());
 
     unsigned long value = 0;
     uint8_t data[3] = { 0 };
@@ -64,7 +69,7 @@ long HX711_read() {
     for(int8_t n = 2; n>=0; n--) {
         for(int8_t i=7; i>=0; i--) {
             clock_high();
-            _delay_us(1); // let some time to hx711 to update output value
+            delay_us(1); // let some time to hx711 to update output value
             data[n] |= get_DOUT() << i;
             clock_low();
         }
@@ -72,7 +77,7 @@ long HX711_read() {
     // set the channel and the gain factor for the next reading using the clock pin
     for (unsigned int i = 0; i < GAIN; i++) {
         clock_high();
-        _delay_us(1); // let some time to hx711 to understand the command
+        delay_us(1); // let some time to hx711 to understand the command
         clock_low();
     }
 
