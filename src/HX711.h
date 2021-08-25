@@ -4,8 +4,8 @@
 
 
  //==== pins=======
-  #define PORT_DOUT GPIOC
-  #define PIN_DOUT GPIO_PIN_4 //5v tolerant input (no protect diode to Vcc)
+  #define PORT_DOUT GPIOB
+  #define PIN_DOUT GPIO_PIN_4 //B4 and B5 is 5v tolerant input (no protect diode to Vss)
 
 
   #define PORT_CLK GPIOC

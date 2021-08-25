@@ -22,12 +22,12 @@ void HX711_init(uint8_t gain) {
 
 //    pinMode(PD_SCK, OUTPUT);
 //    DDR_CLK |= (1 << PIN_CLK);
-     GPIO_Init(PORT_CLK, (GPIO_Pin_TypeDef)PIN_CLK, GPIO_MODE_IN_FL_IT);
+     GPIO_Init(PORT_CLK, (GPIO_Pin_TypeDef)PIN_CLK, GPIO_MODE_OUT_PP_HIGH_FAST);
 
 
 //    pinMode(DOUT, INPUT);
 //    DDR_DOUT &= ~(1 << PIN_DOUT);
-    GPIO_Init(PORT_DOUT, (GPIO_Pin_TypeDef)PIN_DOUT, GPIO_MODE_IN_FL_IT);
+    GPIO_Init(PORT_DOUT, (GPIO_Pin_TypeDef)PIN_DOUT, GPIO_MODE_IN_FL_NO_IT);
 
     HX711_set_gain(gain);
 }
@@ -69,7 +69,7 @@ long HX711_read() {
     for(int8_t n = 2; n>=0; n--) {
         for(int8_t i=7; i>=0; i--) {
             clock_high();
-            delay_us(1); // let some time to hx711 to update output value
+            _delay_us(1); // let some time to hx711 to update output value
             data[n] |= get_DOUT() << i;
             clock_low();
         }
@@ -77,7 +77,7 @@ long HX711_read() {
     // set the channel and the gain factor for the next reading using the clock pin
     for (unsigned int i = 0; i < GAIN; i++) {
         clock_high();
-        delay_us(1); // let some time to hx711 to understand the command
+        _delay_us(1); // let some time to hx711 to understand the command
         clock_low();
     }
 

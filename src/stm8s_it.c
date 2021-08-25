@@ -130,12 +130,13 @@ INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4)
   * @param  None
   * @retval None
   */
-INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
-{
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
-}
+// INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
+// {
+//   /* In order to detect unexpected events during development,
+//      it is recommended to set a breakpoint on the following instruction.
+//   */
+//  if ((GPIO_ReadInputData(PORT_) & JOYSTICK_RIGHT_PIN) == 0x00)
+// }
 
 /**
   * @brief  External Interrupt PORTD Interrupt routine
