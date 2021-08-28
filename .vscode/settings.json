@@ -4,6 +4,9 @@
         "delay.h": "c",
         "stm8s.h": "c",
         "stm8s_gpio.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stdarg.h": "c",
+        "sdcc-lib.h": "c",
+        "stdlib.h": "c"
     }
 }

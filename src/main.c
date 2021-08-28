@@ -21,74 +21,34 @@
 #define PORT_END_STOP GPIOC
 #define PIN_END_STOP GPIO_PIN_5
 
- #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #include "stm8s_uart1.h"
-#include <stdio.h>
+//#include <stdio.h>
+#include <stdlib.h>
 
-/**
-  * @addtogroup UART1_Printf
-  * @{
-  */
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-#ifdef _RAISONANCE_
-  #define PUTCHAR_PROTOTYPE int putchar (char c)
-  #define GETCHAR_PROTOTYPE int getchar (void)
-#elif defined (_COSMIC_)
-  #define PUTCHAR_PROTOTYPE char putchar (char c)
-  #define GETCHAR_PROTOTYPE char getchar (void)
-#elif defined (_SDCC_)         /* SDCC patch: ensure same types as stdio.h */
-  #if SDCC_VERSION >= 30605      // declaration changed in sdcc 3.6.5 (officially with 3.7.0)
-    #define PUTCHAR_PROTOTYPE int putchar(int c)
-    #define GETCHAR_PROTOTYPE int getchar(void)
-  #else
-    #define PUTCHAR_PROTOTYPE void putchar(char c)
-    #define GETCHAR_PROTOTYPE char getchar(void)
-  #endif 
-#else /* _IAR_ */
-  #define PUTCHAR_PROTOTYPE int putchar (int c)
-  #define GETCHAR_PROTOTYPE int getchar (void)
-#endif /* _RAISONANCE_ */
 
-PUTCHAR_PROTOTYPE
+putchar(int c)
 {
   /* Write a character to the UART1 */
   UART1_SendData8(c);
   /* Loop until the end of transmission */
-  while (UART1_GetFlagStatus(UART1_FLAG_TXE) == RESET);
+  while (UART1_GetFlagStatus(UART1_FLAG_TXE) == RESET)
+    ;
 
   return (c);
 }
 
-/**
-  * @brief Retargets the C library scanf function to the USART.
-  * @param None
-  * @retval char Character to Read
-  */
-GETCHAR_PROTOTYPE
-{
-#ifdef _COSMIC_
-  char c = 0;
-#else
-  int c = 0;
-#endif
-  /* Loop until the Read data register flag is SET */
-  while (UART1_GetFlagStatus(UART1_FLAG_RXNE) == RESET);
-    c = UART1_ReceiveData8();
-  return (c);
-}
+
 
 #endif
-
-
-
 
 // vars
 static uint8_t tare_val;
 static uint8_t tare_changed = 0;
 static uint8_t end_stop_enable = 0;
+static char txt_buf[20];
 
 long value;
 
@@ -109,19 +69,19 @@ void setup(void)
 
   // pins configuration
 
-  GPIO_Init(PORT_LED, PIN_LED, GPIO_MODE_OUT_OD_HIZ_SLOW);            // slow , led disabled
-  #ifdef DEBUG
-  GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_PU_IT);                 // tare signal from printer, pull up in DEBUG
-  #else
-  GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_FL_IT);                 // tare signal from printer
-  #endif
+  GPIO_Init(PORT_LED, PIN_LED, GPIO_MODE_OUT_OD_HIZ_SLOW); // slow , led disabled
+#ifdef DEBUG
+  GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_PU_IT); // tare signal from printer, pull up in DEBUG
+#else
+  GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_FL_IT); // tare signal from printer
+#endif
   GPIO_Init(PORT_END_STOP, PIN_END_STOP, GPIO_MODE_OUT_PP_HIGH_SLOW); // end_stop not conencted to 0 by default (end_stop disabled)
 
-  //uart
-  #ifdef DEBUG
+//uart
+#ifdef DEBUG
   UART1_Init((uint32_t)115200, UART1_WORDLENGTH_8D, UART1_STOPBITS_1, UART1_PARITY_NO,
-             UART1_SYNCMODE_CLOCK_DISABLE, UART1_MODE_TXRX_ENABLE);
-    #endif
+             UART1_SYNCMODE_CLOCK_DISABLE, UART1_MODE_TX_ENABLE);
+#endif
 
   tare_val = GPIO_ReadInputPin(PORT_TARE, PIN_TARE);
 
@@ -158,9 +118,14 @@ void loop(void)
       continue;
 
     value = HX711_get_mean_value(WEIGHT_CNT);
-    #ifdef DEBUG
-    printf("value: %n", value);
-    #endif
+#ifdef DEBUG
+   //  printf ("value: %n", value);
+      __uitoa(value, txt_buf, 10);
+      for (uint8_t i = 0; txt_buf[i] != 0; i++){
+         putchar(txt_buf[i]);
+      }     
+     
+#endif
 
     if (value >= WEIGHT_THREASHOLD)
     {
@@ -202,9 +167,6 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
   tare_changed = 1;
   // }
 }
-
-
-   
 
 #ifdef USE_FULL_ASSERT
 

@@ -426,15 +426,15 @@ INTERRUPT_HANDLER(I2C_IRQHandler, 19)
   * @param  None
   * @retval None
   */
- INTERRUPT_HANDLER(ADC1_IRQHandler, 22)
-{
+//  INTERRUPT_HANDLER(ADC1_IRQHandler, 22)
+// {
 
-    /* In order to detect unexpected events during development,
-       it is recommended to set a breakpoint on the following instruction.
-    */
-    return;
+//     /* In order to detect unexpected events during development,
+//        it is recommended to set a breakpoint on the following instruction.
+//     */
+//     return;
 
-}
+// }
 #endif /*STM8S208 or STM8S207 or STM8AF52Ax or STM8AF62Ax */
 
 #ifdef STM8S903
@@ -468,12 +468,12 @@ INTERRUPT_HANDLER(TIM6_UPD_OVF_TRG_IRQHandler, 23)
   * @param  None
   * @retval None
   */
-INTERRUPT_HANDLER(EEPROM_EEC_IRQHandler, 24)
-{
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
-}
+// INTERRUPT_HANDLER(EEPROM_EEC_IRQHandler, 24)
+// {
+//   /* In order to detect unexpected events during development,
+//      it is recommended to set a breakpoint on the following instruction.
+//   */
+// }
 
 /**
   * @}
