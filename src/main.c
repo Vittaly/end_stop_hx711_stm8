@@ -102,9 +102,7 @@ void loop(void)
 
   while (1)
   {
-#ifdef DEBUG
-    _delay_ms(200);
-#endif
+
     // if tare signal up now , then  do tare
     if (tare_changed && tare_val)
     {
@@ -123,7 +121,9 @@ void loop(void)
       __uitoa(value, txt_buf, 10);
       for (uint8_t i = 0; txt_buf[i] != 0; i++){
          putchar(txt_buf[i]);
-      }     
+      }   
+      putchar(0);  
+      _delay_ms(500);
      
 #endif
 
