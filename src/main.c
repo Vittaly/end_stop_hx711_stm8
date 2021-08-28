@@ -22,23 +22,36 @@
 #define PIN_END_STOP GPIO_PIN_5
 
 // vars
-uint8_t tare_val;
-uint8_t tare_changed = 0;
-uint8_t end_stop_enable = 0;
+static uint8_t tare_val;
+static uint8_t tare_changed = 0;
+static uint8_t end_stop_enable = 0;
 
 long value;
+
+
+ void fastBlink (uint8_t cnt){
+ for (uint8_t i = 0; i < cnt; i++){
+   if (i != 0) _delay_ms(100);
+ GPIO_WriteLow(PORT_LED, PIN_LED); // enable led
+ _delay_ms(50);
+ GPIO_WriteHigh(PORT_LED, PIN_LED); // disable led
+ }
+
+} 
 
 void setup(void)
 {
 
   // pins configuration
 
-  GPIO_Init(PORT_LED, PIN_LED, GPIO_MODE_OUT_PP_HIGH_SLOW);           // slow , led disabled
+  GPIO_Init(PORT_LED, PIN_LED, GPIO_MODE_OUT_OD_HIZ_SLOW);           // slow , led disabled
   GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_FL_IT);                 // tare signal from printer
   GPIO_Init(PORT_END_STOP, PIN_END_STOP, GPIO_MODE_OUT_PP_HIGH_SLOW); // end_stop not conencted to 0 by default (end_stop disabled)
 
   tare_val = GPIO_ReadInputPin(PORT_TARE, PIN_TARE);
 
+  fastBlink(3); // start_up info
+  
   HX711_init(128);
 
   /* Initialize the Interrupt sensitivity */
@@ -47,21 +60,12 @@ void setup(void)
   enableInterrupts();
 }
 
- void fastBlink (uint8_t cnt){
- for (uint8_t i = 0; i <= cnt; i++){
-   if (i != 0) _delay_ms(200);
- GPIO_WriteLow(PORT_LED, PIN_LED); // enable led
- _delay_ms(200);
- GPIO_WriteHigh(PORT_LED, PIN_LED); // disable led
- }
 
-} 
 
 void loop(void)
 {
-  //  GPIO_WriteHigh(GPIOA, GPIO_PIN_4);
 
-  fastBlink(3);
+  fastBlink(4); // init compite info
 
   while (1)
   {
@@ -69,7 +73,7 @@ void loop(void)
     if (tare_changed && tare_val)
     {
       tare_changed = 0; // reset flag
-      fastBlink(2);
+      fastBlink(2); // tare input info
       HX711_tare(3);
     }
 
