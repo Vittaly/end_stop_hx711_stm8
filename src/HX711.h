@@ -34,8 +34,8 @@ long HX711_read();
 long HX711_read_average(uint8_t times);
 
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
-double HX711_get_value();
-double HX711_get_mean_value(uint8_t times);
+long HX711_get_value();
+long HX711_get_mean_value(uint8_t times);
 
 
 // returns get_value() divided by SCALE, that is the raw value divided by a value obtained via calibration

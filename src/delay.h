@@ -43,7 +43,7 @@ static inline void _delay_cycl( unsigned short __ticks )
 #endif
 }
 
-static inline void _delay_us( const unsigned short __us )
+static inline void _delay_us( /*const???*/ unsigned short __us )
 {
 	_delay_cycl( (unsigned short)( T_COUNT(__us) );
 }

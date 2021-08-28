@@ -66,8 +66,8 @@ long HX711_read() {
     uint8_t filler = 0x00;
 
     // pulse the clock pin 24 times to read the data
-    for(int8_t n = 2; n>=0; n--) {
-        for(int8_t i=7; i>=0; i--) {
+    for(uint8_t n = 2; n>=0; n--) {
+        for(uint8_t i=7; i>=0; i--) {
             clock_high();
             _delay_us(1); // let some time to hx711 to update output value
             data[n] |= get_DOUT() << i;
@@ -75,7 +75,7 @@ long HX711_read() {
         }
     }
     // set the channel and the gain factor for the next reading using the clock pin
-    for (unsigned int i = 0; i < GAIN; i++) {
+    for (uint8_t i = 0; i < GAIN; i++) {
         clock_high();
         _delay_us(1); // let some time to hx711 to understand the command
         clock_low();
@@ -106,11 +106,11 @@ long HX711_read_average(uint8_t times) {
     return sum / times;
 }
 
-double HX711_get_value() {
+long HX711_get_value() {
     return HX711_read_average(1) - OFFSET;
 }
 
-double HX711_get_mean_value(uint8_t times) {
+long HX711_get_mean_value(uint8_t times) {
     return HX711_read_average(times) - OFFSET;
 }
 
@@ -123,7 +123,7 @@ float HX711_get_mean_units(uint8_t times) {
 }
 
 void HX711_tare(uint8_t times) {
-    double sum = HX711_read_average(times);
+    long sum = HX711_read_average(times);
     HX711_set_offset(sum);
 }
 
