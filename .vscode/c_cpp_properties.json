@@ -8,17 +8,19 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "c:/temp/end_stop_hx711_stm8/include",
-                "c:/temp/end_stop_hx711_stm8/src",
-                "C:/Users/Vitaly/.platformio/packages/framework-ststm8spl/Libraries/STM8S_StdPeriph_Driver/inc",
+                "C:/temp/end_stop_hx711_stm8/include",
+                "C:/temp/end_stop_hx711_stm8/src",
+                "C:/Users/Nataly/.platformio/packages/framework-ststm8spl/Libraries/STM8S_StdPeriph_Driver/inc",
+                "C:/Users/Nataly/.platformio/packages/tool-unity",
                 ""
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "c:/temp/end_stop_hx711_stm8/include",
-                    "c:/temp/end_stop_hx711_stm8/src",
-                    "C:/Users/Vitaly/.platformio/packages/framework-ststm8spl/Libraries/STM8S_StdPeriph_Driver/inc",
+                    "C:/temp/end_stop_hx711_stm8/include",
+                    "C:/temp/end_stop_hx711_stm8/src",
+                    "C:/Users/Nataly/.platformio/packages/framework-ststm8spl/Libraries/STM8S_StdPeriph_Driver/inc",
+                    "C:/Users/Nataly/.platformio/packages/tool-unity",
                     ""
                 ]
             },
@@ -31,7 +33,7 @@
                 "USE_STDINT",
                 ""
             ],
-            "compilerPath": "C:/Users/Vitaly/.platformio/packages/toolchain-sdcc/bin/sdcc.exe",
+            "compilerPath": "C:/Users/Nataly/.platformio/packages/toolchain-sdcc/bin/sdcc.exe",
             "compilerArgs": [
                 "-mstm8",
                 ""

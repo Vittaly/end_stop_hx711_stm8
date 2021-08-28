@@ -12,6 +12,8 @@
   #define PIN_CLK GPIO_PIN_3
  //==== end pins=======
 
+#define STROBE_WIGHT 2
+
 
 // define channel, and gain factor
 // channel selection is made by passing the appropriate gain: 128 or 64 for channel A, 32 for channel B

@@ -66,10 +66,10 @@ long HX711_read() {
     uint8_t filler = 0x00;
 
     // pulse the clock pin 24 times to read the data
-    for(uint8_t n = 2; n>=0; n--) {
-        for(uint8_t i=7; i>=0; i--) {
+    for(int8_t n = 2; n>=0; n--) {
+        for(int8_t i=7; i>=0; i--) {
             clock_high();
-            _delay_us(1); // let some time to hx711 to update output value
+            _delay_us(STROBE_WIGHT); // let some time to hx711 to update output value
             data[n] |= get_DOUT() << i;
             clock_low();
         }
@@ -77,7 +77,7 @@ long HX711_read() {
     // set the channel and the gain factor for the next reading using the clock pin
     for (uint8_t i = 0; i < GAIN; i++) {
         clock_high();
-        _delay_us(1); // let some time to hx711 to understand the command
+        _delay_us(STROBE_WIGHT); // let some time to hx711 to understand the command
         clock_low();
     }
 

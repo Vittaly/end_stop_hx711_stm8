@@ -7,9 +7,9 @@
 //#define bool smart_switch
 
 //Filter parameters
-#define WEIGHT_CNT 1 //HX711 speed is 80Hz or near this value. To get 10 values the sensor need around 120ms.
-#define GISTERESIS 100
-#define WEIGHT_THREASHOLD 3000 //Weight difference trigger. Lower is better
+#define WEIGHT_CNT 3 //HX711 speed is 80Hz or near this value. To get 10 values the sensor need around 120ms.
+#define GISTERESIS 300
+#define WEIGHT_THREASHOLD 5000 //Weight difference trigger. Lower is better
 
 //Pins
 #define PORT_LED GPIOB
@@ -45,7 +45,7 @@ void setup(void)
   // pins configuration
 
   GPIO_Init(PORT_LED, PIN_LED, GPIO_MODE_OUT_OD_HIZ_SLOW);           // slow , led disabled
-  GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_FL_IT);                 // tare signal from printer
+  GPIO_Init(PORT_TARE, PIN_TARE, GPIO_MODE_IN_PU_IT);                 // tare signal from printer
   GPIO_Init(PORT_END_STOP, PIN_END_STOP, GPIO_MODE_OUT_PP_HIGH_SLOW); // end_stop not conencted to 0 by default (end_stop disabled)
 
   tare_val = GPIO_ReadInputPin(PORT_TARE, PIN_TARE);
@@ -65,7 +65,7 @@ void setup(void)
 void loop(void)
 {
 
-  fastBlink(4); // init compite info
+  fastBlink(2); // init compite info
 
   while (1)
   {
@@ -73,7 +73,7 @@ void loop(void)
     if (tare_changed && tare_val)
     {
       tare_changed = 0; // reset flag
-      fastBlink(2); // tare input info
+    //  fastBlink(1); // tare input info
       HX711_tare(3);
     }
 
