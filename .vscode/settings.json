@@ -3,6 +3,7 @@
         "hx711.h": "c",
         "delay.h": "c",
         "stm8s.h": "c",
-        "stm8s_gpio.h": "c"
+        "stm8s_gpio.h": "c",
+        "stdio.h": "c"
     }
 }
