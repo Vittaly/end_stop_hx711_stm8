@@ -1,40 +1,32 @@
-#include <HX711.h>
-#include <stm8s_gpio.h>
+#include "HX711.h"
+#include <Arduino.h>
 #include "delay.h"
 
-// static uint8_t PD_SCK;    // Power Down and Serial Clock Input Pin
-// static uint8_t DOUT;// Serial Data Output Pin
+static uint8_t PD_SCK;    // Power Down and Serial Clock Input Pin
+static uint8_t DOUT;// Serial Data Output Pin
 static uint8_t GAIN;// amplification factor
 static long OFFSET = 0;    // used for tare weight
 static float SCALE = 1;    // used to return weight in grams, kg, ounces, whatever
  
+#define STROBE_WIGHT 1
+#define clock_low() digitalWrite(PD_SCK, LOW)
+#define clock_high() digitalWrite(PD_SCK, HIGH)
+#define get_DOUT() digitalRead(GAIN)
+
  
-//#define clock_high() (PORT_CLK |=  (1 << PIN_CLK))
-#define clock_high() GPIO_WriteHigh(PORT_CLK, PIN_CLK)
-//#define clock_low()  (PORT_CLK &= ~(1 << PIN_CLK))
-#define clock_low() GPIO_WriteLow(PORT_CLK, PIN_CLK)
-//#define get_DOUT()   ((READ_PORT_DOUT & (1 << PIN_DOUT)) >> PIN_DOUT)
-#define get_DOUT() GPIO_ReadInputPin(PORT_DOUT, PIN_DOUT)
+void HX711_begin(byte dout, byte pd_sck, byte gain){
+    PD_SCK = pd_sck;
+	DOUT = dout;
 
-void HX711_init(uint8_t gain) {
-//     PD_SCK = pd_sck;
-//     DOUT = dout;
+	pinMode(PD_SCK, OUTPUT);
+	pinMode(DOUT, INPUT_PULLUP);
 
-//    pinMode(PD_SCK, OUTPUT);
-//    DDR_CLK |= (1 << PIN_CLK);
-     GPIO_Init(PORT_CLK, (GPIO_Pin_TypeDef)PIN_CLK, GPIO_MODE_OUT_PP_HIGH_FAST);
+	HX711_set_gain(gain);
+} 
 
-
-//    pinMode(DOUT, INPUT);
-//    DDR_DOUT &= ~(1 << PIN_DOUT);
-    GPIO_Init(PORT_DOUT, (GPIO_Pin_TypeDef)PIN_DOUT, GPIO_MODE_IN_FL_NO_IT);
-
-    HX711_set_gain(gain);
-}
 
 uint8_t HX711_is_ready() {
-    //return digitalRead(DOUT) == LOW;
-    return (get_DOUT() == 0);
+    return (get_DOUT() == LOW);
 }
 
 void HX711_set_gain(uint8_t gain) {
@@ -72,6 +64,7 @@ long HX711_read() {
             _delay_us(STROBE_WIGHT); // let some time to hx711 to update output value
             data[n] |= get_DOUT() << i;
             clock_low();
+			_delay_us(STROBE_WIGHT); // let some time to hx711 to update output value
         }
     }
     // set the channel and the gain factor for the next reading using the clock pin
@@ -79,6 +72,7 @@ long HX711_read() {
         clock_high();
         _delay_us(STROBE_WIGHT); // let some time to hx711 to understand the command
         clock_low();
+		_delay_us(STROBE_WIGHT); // let some time to hx711 to understand the command
     }
 
     // Replicate the most significant bit to pad out a 32-bit signed integer
@@ -101,7 +95,6 @@ long HX711_read_average(uint8_t times) {
     long sum = 0;
     for (uint8_t i = 0; i < times; i++) {
         sum += HX711_read();
-//         yield();
     }
     return sum / times;
 }
@@ -114,26 +107,13 @@ long HX711_get_mean_value(uint8_t times) {
     return HX711_read_average(times) - OFFSET;
 }
 
-float HX711_get_units() {
-    return HX711_get_value() / SCALE;
-}
-
-float HX711_get_mean_units(uint8_t times) {
-    return HX711_get_mean_value(times) / SCALE;
-}
 
 void HX711_tare(uint8_t times) {
     long sum = HX711_read_average(times);
     HX711_set_offset(sum);
 }
 
-void HX711_set_scale(float scale) {
-    SCALE = scale;
-}
 
-float HX711_get_scale() {
-    return SCALE;
-}
 
 void HX711_set_offset(long offset) {
     OFFSET = offset;

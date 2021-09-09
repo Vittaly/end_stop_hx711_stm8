@@ -5,6 +5,8 @@
  * t.oleg@ymail.com
  */
 
+#define F_CPU 16000000L
+
 #ifndef _UTIL_DELAY_H_
 #define _UTIL_DELAY_H_ 1
 
