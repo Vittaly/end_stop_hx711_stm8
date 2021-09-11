@@ -8,10 +8,10 @@ static uint8_t GAIN;// amplification factor
 static long OFFSET = 0;    // used for tare weight
 static float SCALE = 1;    // used to return weight in grams, kg, ounces, whatever
  
-#define STROBE_WIGHT 1
+#define STROBE_WIGHT 2
 #define clock_low() digitalWrite(PD_SCK, LOW)
 #define clock_high() digitalWrite(PD_SCK, HIGH)
-#define get_DOUT() digitalRead(GAIN)
+#define get_DOUT() digitalRead(DOUT)
 
  
 void HX711_begin(byte dout, byte pd_sck, byte gain){
@@ -19,7 +19,7 @@ void HX711_begin(byte dout, byte pd_sck, byte gain){
 	DOUT = dout;
 
 	pinMode(PD_SCK, OUTPUT);
-	pinMode(DOUT, INPUT_PULLUP);
+	pinMode(DOUT, INPUT);
 
 	HX711_set_gain(gain);
 } 

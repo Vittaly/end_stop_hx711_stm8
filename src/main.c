@@ -1,6 +1,7 @@
 #include <PCD8544.h>
 #include "HX711.h"
 #include "delay.h"
+#include "arduino.h"
 
 //---- define pins---
 #define HX711_DOUT PB4
@@ -18,7 +19,7 @@
 
 #ifdef DEBUG
 // disable sense for first debug wo sensor
-#define DISABLE_SENS
+//#define DISABLE_SENS
 
 #define LCD_CLK PC6
 #define LCD_SDIN PC7
@@ -67,7 +68,7 @@ void setup(void)
 
   // pin conf
   pinMode(PIN_LED_BUILTIN, OUTPUT);
-  pinMode(TARE, INPUT);
+  pinMode(TARE, INPUT_PULLUP);
   digitalWrite(PIN_LED_BUILTIN, HIGH); // disable led
 
 #ifdef DEBUG
@@ -98,7 +99,7 @@ void loop()
   on_tare_change();
 #ifdef DEBUG
   _delay_ms(500);
-  Serial_println_u(tare_val);
+  //Serial_println_u(tare_val);
 #endif
   //tare_val = digitalRead(TARE);
   // if (tare_standup)
@@ -112,7 +113,7 @@ void loop()
   
 
   // if tare signal up now , then  do tare
-  if (tare_standup == 1 && tare_val == 1)
+  if (tare_standup == 1)
   {
     tare_standup = LOW; // reset flag
     fastBlink(1); // tare input info
@@ -132,9 +133,9 @@ void loop()
 #endif
 #ifdef DEBUG
   _delay_ms(500);
-  lcd_setCursor(0, 1);
-  lcd_print_u(meas_value);
-  Serial_println_u(meas_value);
+  //lcd_setCursor(0, 1);
+  //lcd_print_u(meas_value);
+  Serial_println_u(HX711_read());
 #endif
 
   if (meas_value >= WEIGHT_THREASHOLD)
