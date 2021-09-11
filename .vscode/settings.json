@@ -7,6 +7,8 @@
         "stdio.h": "c",
         "stdarg.h": "c",
         "sdcc-lib.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "pcd8544.h": "c",
+        "arduino.h": "c"
     }
 }

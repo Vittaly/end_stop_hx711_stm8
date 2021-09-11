@@ -3,7 +3,7 @@
 #include "delay.h"
 
 //---- define pins---
-#define HX711_DOUT PD4
+#define HX711_DOUT PB4
 #define HX711_CLK PC3
 #define END_STOP PC5
 #define TARE PC4
@@ -28,23 +28,23 @@
 
 PCD8544(lcd, LCD_CLK, LCD_SDIN, LCD_DC, LCD_RESET, LCD_SCE); // sclk,sdin,dc,reset,sce
 
-
 #endif
 
 //------------vars--------------------
-static uint8_t tare_val;
-static uint8_t tare_changed = 0;
-static uint8_t end_stop_enable = 0;
+static unsigned char tare_val = 0;
+static unsigned char tare_val_old = 0;
+static unsigned char tare_standup = 0;
+static unsigned char end_stop_enable = 0;
 static long meas_value;
 
-void fastBlink(uint8_t cnt)
+void fastBlink(unsigned char cnt)
 {
-  for (uint8_t i = 0; i < cnt; i++)
+  for (unsigned char i = 0; i < cnt; i++)
   {
     if (i != 0)
-      _delay_ms(100);
+      _delay_ms(500);
     digitalWrite(PIN_LED_BUILTIN, LOW); // enable led
-    _delay_ms(50);
+    _delay_ms(500);
     digitalWrite(PIN_LED_BUILTIN, HIGH); // disable led
   }
 }
@@ -52,8 +52,14 @@ void fastBlink(uint8_t cnt)
 //------------------interupts-------------
 void on_tare_change(void)
 {
-  tare_changed = HIGH;
+  // tare_standup = HIGH;
   tare_val = digitalRead(TARE);
+  if (tare_val != tare_val_old) // signal changed
+  {
+    tare_val_old = tare_val;
+    if (tare_val = HIGH)
+      tare_standup = HIGH; // start to work
+  }
 }
 
 void setup(void)
@@ -61,35 +67,59 @@ void setup(void)
 
   // pin conf
   pinMode(PIN_LED_BUILTIN, OUTPUT);
+  pinMode(TARE, INPUT);
+  digitalWrite(PIN_LED_BUILTIN, HIGH); // disable led
 
 #ifdef DEBUG
   lcd_begin();
-  Serial_begin(9600);
+  HardwareSerial_begin(9600);
   //PCD8544_begin();
   // Write some text on the first line...
   lcd_setCursor(0, 0);
   lcd_print_s("Hello, World!");
   Serial_println_s("Hello, World!");
+
 #endif
 
 #ifndef DISABLE_SENS
-  HX711_begin(PD4, PC5, 128); // dout clk range
+  HX711_begin(HX711_DOUT, HX711_CLK, 128); // dout clk range
 #endif
-  //  attachInterrupt(digitalPinToInterrupt(TARE), on_tare_change, CHANGE);
+ //  attachInterrupt(digitalPinToPort(TARE), on_tare_change, CHANGE);
+ //  EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOC, EXTI_SENSITIVITY_RISE_FALL);
+  
+  //GPIO_Init(GPIOA, GPIO_PIN_3, GPIO_MODE_IN_FL_IT);
+ // enableInterrupts();
+  
   fastBlink(3); // start_up info
 }
 
 void loop()
 {
+  on_tare_change();
+#ifdef DEBUG
+  _delay_ms(500);
+  Serial_println_u(tare_val);
+#endif
+  //tare_val = digitalRead(TARE);
+  // if (tare_standup)
+  // {
+  //   tare_val_old = tare_val;
+  //   tare_standup = HIGH;
+  //   fastBlink(1); // tare input info
+  // }
+  // else
+  //   tare_standup = LOW;
+  
 
   // if tare signal up now , then  do tare
-  if (tare_changed && tare_val)
+  if (tare_standup == 1 && tare_val == 1)
   {
-    tare_changed = 0; // reset flag
-                      //  fastBlink(1); // tare input info
-                      #ifndef DISABLE_SENS
+    tare_standup = LOW; // reset flag
+    fastBlink(1); // tare input info
+
+#ifndef DISABLE_SENS
     HX711_tare(3);
-    #endif
+#endif
   }
 
   // wait to tare signal from printer to start meashurence or check thet was disabled
@@ -97,13 +127,13 @@ void loop()
     return;
 #ifndef DISABLE_SENS
   meas_value = HX711_get_mean_value(WEIGHT_CNT);
-  #else
+#else
   meas_value = 567;
-  #endif
+#endif
 #ifdef DEBUG
   _delay_ms(500);
   lcd_setCursor(0, 1);
-  lcd_print_u(meas_value);  
+  lcd_print_u(meas_value);
   Serial_println_u(meas_value);
 #endif
 
@@ -119,13 +149,13 @@ void loop()
 
   if (end_stop_enable)
   {
-    digitalWrite(PIN_LED_BUILTIN, LOW);           // led on
-    digitalWrite(END_STOP, LOW); // end stop conenct to ground (activate)
+    digitalWrite(PIN_LED_BUILTIN, LOW); // led on
+    digitalWrite(END_STOP, LOW);        // end stop conenct to ground (activate)
   }
   else
   {
 
-    digitalWrite(PIN_LED_BUILTIN, HIGH);            // led of
-    digitalWrite(END_STOP, HIGH); // end stop conenct to 3.3v (diactivate)
+    digitalWrite(PIN_LED_BUILTIN, HIGH); // led of
+    digitalWrite(END_STOP, HIGH);        // end stop conenct to 3.3v (diactivate)
   }
 }

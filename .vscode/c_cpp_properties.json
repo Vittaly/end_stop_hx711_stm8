@@ -8,8 +8,8 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "c:/TEMP/end_stop_hx711_stm8/include",
-                "c:/TEMP/end_stop_hx711_stm8/src",
+                "c:/temp/end_stop_hx711_stm8/include",
+                "c:/temp/end_stop_hx711_stm8/src",
                 "C:/Users/Vitaly/.platformio/packages/framework-arduinoststm8/libraries/PCD8544",
                 "C:/Users/Vitaly/.platformio/packages/framework-arduinoststm8/cores/sduino",
                 "C:/Users/Vitaly/.platformio/packages/framework-arduinoststm8/STM8S_StdPeriph_Driver/inc",
@@ -30,8 +30,8 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "c:/TEMP/end_stop_hx711_stm8/include",
-                    "c:/TEMP/end_stop_hx711_stm8/src",
+                    "c:/temp/end_stop_hx711_stm8/include",
+                    "c:/temp/end_stop_hx711_stm8/src",
                     "C:/Users/Vitaly/.platformio/packages/framework-arduinoststm8/libraries/PCD8544",
                     "C:/Users/Vitaly/.platformio/packages/framework-arduinoststm8/cores/sduino",
                     "C:/Users/Vitaly/.platformio/packages/framework-arduinoststm8/STM8S_StdPeriph_Driver/inc",
