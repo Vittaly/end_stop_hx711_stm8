@@ -12,7 +12,7 @@
 //Filter parameters
 #define WEIGHT_CNT 3 //HX711 speed is 80Hz or near this value. To get 10 values the sensor need around 120ms.
 #define GISTERESIS 300
-#define WEIGHT_THREASHOLD 2000 //Weight difference trigger. Lower is better
+#define WEIGHT_THREASHOLD 3000 //Weight difference trigger. Lower is better
 
 // should be disable after debugering
 //#define DEBUG
@@ -54,11 +54,17 @@ void fastBlink(unsigned char cnt)
 void on_tare_change(void)
 {
   // tare_standup = HIGH;
-  tare_val = digitalRead(TARE);
+  #define TARE_CNT 3
+  for (char i = 0; i < TARE_CNT;i++){  
+    tare_val += digitalRead(TARE);
+   // _delay_us(30);
+  }
+  tare_val /= TARE_CNT;
+
   if (tare_val != tare_val_old) // signal changed
   {
     tare_val_old = tare_val;
-    if (tare_val = HIGH)
+    if (tare_val == HIGH)
       tare_standup = HIGH; // start to work
   }
 }
@@ -99,15 +105,6 @@ void loop()
 {
   on_tare_change();
 
-  //tare_val = digitalRead(TARE);
-  // if (tare_standup)
-  // {
-  //   tare_val_old = tare_val;
-  //   tare_standup = HIGH;
-  //   fastBlink(1); // tare input info
-  // }
-  // else
-  //   tare_standup = LOW;
 
   // if tare signal up now , then  do tare
   if (tare_standup)
@@ -128,6 +125,9 @@ void loop()
   // wait to tare signal from printer to start meashurence or check thet was disabled
   if (!tare_val && !end_stop_enable)
     return;
+
+
+
 #ifndef DISABLE_SENS
   meas_value = HX711_get_mean_value(WEIGHT_CNT);
   if (meas_value < 0)

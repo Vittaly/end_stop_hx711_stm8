@@ -64,7 +64,7 @@ long HX711_read() {
             _delay_us(STROBE_WIGHT); // let some time to hx711 to update output value
             data[n] |= get_DOUT() << i;
             clock_low();
-			_delay_us(STROBE_WIGHT); // let some time to hx711 to update output value
+		//	_delay_us(STROBE_WIGHT); // let some time to hx711 to update output value
         }
     }
     // set the channel and the gain factor for the next reading using the clock pin
