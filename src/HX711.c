@@ -8,7 +8,7 @@ static uint8_t GAIN;// amplification factor
 static long OFFSET = 0;    // used for tare weight
 static float SCALE = 1;    // used to return weight in grams, kg, ounces, whatever
  
-#define STROBE_WIGHT 2
+#define STROBE_WIGHT 1
 #define clock_low() digitalWrite(PD_SCK, LOW)
 #define clock_high() digitalWrite(PD_SCK, HIGH)
 #define get_DOUT() digitalRead(DOUT)

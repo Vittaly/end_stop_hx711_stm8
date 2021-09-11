@@ -12,10 +12,10 @@
 //Filter parameters
 #define WEIGHT_CNT 3 //HX711 speed is 80Hz or near this value. To get 10 values the sensor need around 120ms.
 #define GISTERESIS 300
-#define WEIGHT_THREASHOLD 1000 //Weight difference trigger. Lower is better
+#define WEIGHT_THREASHOLD 2000 //Weight difference trigger. Lower is better
 
 // should be disable after debugering
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 // disable sense for first debug wo sensor
@@ -43,9 +43,9 @@ void fastBlink(unsigned char cnt)
   for (unsigned char i = 0; i < cnt; i++)
   {
     if (i != 0)
-      _delay_ms(500);
+      _delay_ms(200);
     digitalWrite(PIN_LED_BUILTIN, LOW); // enable led
-    _delay_ms(500);
+    _delay_ms(200);
     digitalWrite(PIN_LED_BUILTIN, HIGH); // disable led
   }
 }
@@ -69,6 +69,7 @@ void setup(void)
   // pin conf
   pinMode(PIN_LED_BUILTIN, OUTPUT);
   pinMode(TARE, INPUT_PULLUP);
+  pinMode(END_STOP, OUTPUT);
   digitalWrite(PIN_LED_BUILTIN, HIGH); // disable led
 
 #ifdef DEBUG
@@ -85,22 +86,19 @@ void setup(void)
 #ifndef DISABLE_SENS
   HX711_begin(HX711_DOUT, HX711_CLK, 128); // dout clk range
 #endif
- //  attachInterrupt(digitalPinToPort(TARE), on_tare_change, CHANGE);
- //  EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOC, EXTI_SENSITIVITY_RISE_FALL);
-  
+  //  attachInterrupt(digitalPinToPort(TARE), on_tare_change, CHANGE);
+  //  EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOC, EXTI_SENSITIVITY_RISE_FALL);
+
   //GPIO_Init(GPIOA, GPIO_PIN_3, GPIO_MODE_IN_FL_IT);
- // enableInterrupts();
-  
+  // enableInterrupts();
+
   fastBlink(3); // start_up info
 }
 
 void loop()
 {
   on_tare_change();
-#ifdef DEBUG
-  _delay_ms(500);
-  //Serial_println_u(tare_val);
-#endif
+
   //tare_val = digitalRead(TARE);
   // if (tare_standup)
   // {
@@ -110,16 +108,20 @@ void loop()
   // }
   // else
   //   tare_standup = LOW;
-  
 
   // if tare signal up now , then  do tare
-  if (tare_standup == 1)
+  if (tare_standup)
   {
     tare_standup = LOW; // reset flag
-    fastBlink(1); // tare input info
+    fastBlink(1);       // tare input info
 
 #ifndef DISABLE_SENS
-    HX711_tare(3);
+    HX711_tare(WEIGHT_CNT+2);
+#endif
+
+#ifdef DEBUG
+    Serial_println_s("Tired:");
+    Serial_println_s(HX711_get_offset());
 #endif
   }
 
@@ -128,6 +130,8 @@ void loop()
     return;
 #ifndef DISABLE_SENS
   meas_value = HX711_get_mean_value(WEIGHT_CNT);
+  if (meas_value < 0)
+    meas_value *= -1;
 #else
   meas_value = 567;
 #endif
@@ -135,7 +139,12 @@ void loop()
   _delay_ms(500);
   //lcd_setCursor(0, 1);
   //lcd_print_u(meas_value);
-  Serial_println_u(HX711_read());
+  Serial_print_i(HX711_read_average(3));
+  Serial_print_s("::");
+  Serial_print_i(HX711_get_offset());
+
+  Serial_print_s("::");
+  Serial_println_i(meas_value);
 #endif
 
   if (meas_value >= WEIGHT_THREASHOLD)
