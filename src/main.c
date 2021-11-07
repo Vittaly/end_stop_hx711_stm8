@@ -14,10 +14,10 @@
 
 #define WEIGHT_THREASHOLD 7000 //Weight difference trigger. Lower is better
 #define GISTERESIS (WEIGHT_THREASHOLD / 10)
-#define INVERT_DIR // use if sensor mount incorrest
+//#define INVERT_DIR // use if sensor mount incorrest
 
 // should be disable after debugering
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 // disable sense for first debug wo sensor
@@ -150,8 +150,8 @@ void loop()
  // Serial_print_i(WEIGHT_THREASHOLD);
     Serial_print_s("::end=");
   Serial_print_i(end_stop_enable);
-    Serial_print_s("::tare_val=");
-  Serial_print_i(tare_val);
+   // Serial_print_s("::tare_val=");
+ // Serial_print_i(tare_val);
   Serial_print_s("::val=");
   Serial_println_i(meas_value);
 #endif
@@ -165,7 +165,7 @@ void loop()
   }
   else 
   #ifndef INVERT_DIR
-  if (end_stop_enable && meas_value < WEIGHT_THREASHOLD - GISTERESIS)
+  if (end_stop_enable && meas_value < (WEIGHT_THREASHOLD - GISTERESIS))
   #else
   if (end_stop_enable && meas_value > -(WEIGHT_THREASHOLD - GISTERESIS))
   #endif
