@@ -17,7 +17,7 @@
 //#define INVERT_DIR // use if sensor mount incorrest
 
 // should be disable after debugering
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 // disable sense for first debug wo sensor
