@@ -12,7 +12,7 @@
 //Filter parameters
 #define WEIGHT_CNT 2 //HX711 speed is 80Hz or near this value. To get 10 values the sensor need around 120ms.
 
-#define WEIGHT_THREASHOLD 7000 //Weight difference trigger. Lower is better
+#define WEIGHT_THREASHOLD 2000 //Weight difference trigger. Lower is better
 #define GISTERESIS (WEIGHT_THREASHOLD / 10)
 //#define INVERT_DIR // use if sensor mount incorrest
 
